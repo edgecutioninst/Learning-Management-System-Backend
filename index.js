@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import dotenv from "dotenv";
+import { checkHealth } from "./controllers/health.controller";
 dotenv.config();
 
 const app = express();
@@ -68,9 +69,14 @@ app.use(cors({
     ],
 }));
 
+//api imports: 
+import healthRoute from "./routes/health.route.js";
+import userRoute from "./routes/user.route.js"
+
+
 //api routes:
-
-
+app.use("/api/v1/healthcheck", healthRoute)
+app.use("/api/v1/user", userRoute)
 
 //404 handler:
 app.use((req, res) => {
