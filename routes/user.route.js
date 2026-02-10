@@ -1,28 +1,37 @@
+import express from 'express';
 import {
     authenticateUser,
     createUserAccount,
     getCurrentUserProfile,
     signOutUser,
-    updateUserProfile
+    updateUserProfile,
+    changeUserPassword,
+    forgotPassword,
+    resetPassword,
+    deleteUserAccount,
 } from '../controllers/user.controller.js';
-import express from 'express';
-import { upload } from '../utils/multer.js'
+import upload from '../utils/multer.js';
 import { isAuthenticated } from '../middlewares/auth.middleware.js';
 import { validateSignUp } from '../middlewares/validation.middleware.js';
 
 const router = express.Router();
 
 
-//auth routes:
-router.post("/signup", validateSignUp, createUserAccount)
-    .post("/signin", authenticateUser)
-    .post("/signout", signOutUser)
+//auth routes
+router.post("/signup", validateSignUp, createUserAccount);
+router.post("/signin", authenticateUser);
+router.post("/signout", signOutUser);
 
+//profile routes
+router.get("/profile", isAuthenticated, getCurrentUserProfile);
+router.patch("/profile", isAuthenticated, upload.single("avatar"), updateUserProfile);
+router.delete("/delete-account", isAuthenticated, deleteUserAccount);
 
-//profile routes:
-router.get("/profile", isAuthenticated, getCurrentUserProfile)
-    .patch("/profile", isAuthenticated, upload.single("avatar"), updateUserProfile)
+//password-management
+router.patch("/change-password", isAuthenticated, changeUserPassword);
 
+router.post("/forgot-password", forgotPassword);
 
+router.post("/reset-password/:token", resetPassword);
 
 export default router;

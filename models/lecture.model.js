@@ -44,7 +44,7 @@ const lectureSchema = new mongoose.Schema({
 lectureSchema.pre("save", function (next) {
     if (this.duration) {
         this.duration = Math.round(this.duration * 100) / 100;
-    } next()
+    }
 })
 
 

@@ -9,7 +9,7 @@ export const checkHealth = async (req, res) => {
             timeStamp: new Date().toISOString(),
             services: {
                 database: {
-                    status: dbStatus.isConnected() ? "HEALTHY" : "UNHEALTHY",
+                    status: dbStatus.isConnected ? "HEALTHY" : "UNHEALTHY",
                     details: {
                         ...dbStatus,
                         readyState: getReadyStateText(dbStatus.readyState)

@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const MAX_RETRIES = 3 // maximum number of retries before giving up
 const RETRY_INTERVAL = 5000 // 5 seconds
@@ -37,24 +37,25 @@ class DatabaseConnection {
 
     async connect() {
         try {
+
             if (!process.env.MONGO_URI) {
                 throw new Error("MONGO_URI is not defined");
             }
 
-            const connectionOptions = {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                maxPoolSize: 10, // Maximum number of connections in the pool
-                serverSelectionTimeoutMS: 5000, // Maximum time to wait for a connection to be established
-                socketTimeoutMS: 45000, // Maximum time to wait for a socket to establish a connection
-                family: 4 // IPv4 address family
-            };
+            // const connectionOptions = {
+            //     useNewUrlParser: true,
+            //     useUnifiedTopology: true,
+            //     maxPoolSize: 10, // Maximum number of connections in the pool
+            //     serverSelectionTimeoutMS: 5000, // Maximum time to wait for a connection to be established
+            //     socketTimeoutMS: 45000, // Maximum time to wait for a socket to establish a connection
+            //     family: 4 // IPv4 address family
+            // };
 
             if (process.env.NODE_ENV === "development") {
                 mongoose.set("debug", true);
             }
 
-            await mongoose.connect(process.env.MONGO_URI, connectionOptions);
+            await mongoose.connect(process.env.MONGO_URI);
             this.retryCount = 0; // reset retry count on successful connection
         } catch (error) {
             console.error("Database connection error:", error);

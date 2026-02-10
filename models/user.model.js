@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: {
-            value: ["student", "instructor", "admin"],
+            values: ["student", "instructor", "admin"],
             message: "Please select a valid role"
         },
 
@@ -54,10 +54,6 @@ const userSchema = new mongoose.Schema({
         course: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Course",
-        },
-        enrolledAt: {
-            type: Date,
-            default: Date.now
         }
     }],
 
@@ -86,10 +82,9 @@ const userSchema = new mongoose.Schema({
 //hash password: 
 userSchema.pre('save', async function (next) {
 
-    if (!this.isModified("password")) next()
+    if (!this.isModified("password")) return
 
     this.password = await bcrypt.hash(this.password, 10)
-    next()
 })
 
 //compare password: 
@@ -117,6 +112,7 @@ userSchema.methods.updateLastActive = function () {
 //virtual - ghost field, use toJSON to make them appear in the response
 //virtual field for total enrolled courses:
 userSchema.virtual("totalEnrolledCourses").get(function () {
+    if (!this.enrolledCourses) return 0;
     return this.enrolledCourses.length
 })
 

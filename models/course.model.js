@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const courseSchema = new mongoose.Schema({
+
     title: {
         type: String,
         required: [true, "Please add a title"],
@@ -35,9 +36,8 @@ const courseSchema = new mongoose.Schema({
         min: [0, 'Price can not be negative']
     },
     thumbnail: {
-        type: String,
-        required: [true, "Please add a thumbnail"],
-        trim: true
+        public_id: { type: String, required: true },
+        url: { type: String, required: true },
     },
     enrolledStudents: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -93,13 +93,14 @@ courseSchema.virtual("averageRating").get(function () {
     return totalRating / this.ratings.length
 })
 
-courseSchema.pre("save", function (next) {
+courseSchema.pre("save", function () {
     if (this.lectures) {
         this.totalLectures = this.lectures.length
 
-    } next()
+    }
+
 })
 
 
-
-export const Course = mongoose.model("Course", courseSchema)
+const Course = mongoose.model("Course", courseSchema)
+export default Course

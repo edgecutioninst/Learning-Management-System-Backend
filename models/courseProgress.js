@@ -52,9 +52,10 @@ const courseProgressSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 })
 
+courseProgressSchema.index({ user: 1, course: 1 }, { unique: true });
 
 //course completion calc:
-courseProgressSchema.pre('save', function (next) {
+courseProgressSchema.pre('save', function () {
     if (this.lectureProgress.length > 0) {
 
         const completedLectures = this.lectureProgress.filter(lecture => lecture.isCompleted)
@@ -63,7 +64,7 @@ courseProgressSchema.pre('save', function (next) {
 
         this.isCompleted = this.completionPercentage === 100
 
-    } next()
+    }
 })
 
 //update last accesssed:
